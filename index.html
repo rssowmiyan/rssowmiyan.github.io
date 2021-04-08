@@ -4,23 +4,17 @@
 <head>  
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" href="images/mask emoji.png">
-  <title>Web tech assignment 1.1</title>
+  <title>cloud</title>
   <link rel="stylesheet" href="css/test.css">
   <link href="css/style.css" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <script src="js/confetti.js"></script>
 </head>
 
-<body>
+<body id="main">
 
-    <!-- <nav>
-        <ul id='navbar'>
-            <li><a class="" href="#welcome-section">Home</a>
-            <li><a class="" href="#projects">Work</a></li>
-            <li><a class="" href="#contact">Contact</a></li>
-        </ul>
-    </nav> -->
     <div class="container red topBotomBordersOut">
-        <a class="" href="#welcome-section">Home</a>
+        <a class="#" href="#welcome-section">Home</a>
         <a href="#projects">Work</a>
         <a href="#contact">Contact</a>
     </div> 
@@ -56,8 +50,8 @@
             <h1>Let's work together  &#9989;...</h1>
             <p>Grab a cup of tea ☕</p>
         </div>
-        <a href="https://www.facebook.com/Rssowmiyan/" target="_blank" class="contact-details">Facebook</a>
-        <a id='profile-link' href="https://github.com/rssowmiyan" target="_blan" class="contact-details">GitHub</a>
+        <a href="https://www.linkedin.com/in/rs-sowmiyan-34647016b/" target="_blank" class="contact-details">LinkedIn</a>
+        <a id='profile-link' href="https://github.com/rssowmiyan" target="_blanl" class="contact-details">GitHub</a>
         <a href="https://twitter.com/rssowmiyan7" target="_blank" class="contact-details">Twitter</a>
         <a href="mailto:sowmiyan00@gmail.com" class="contact-details" target="_blank">Send a mail</a>
     </div>
@@ -65,8 +59,24 @@
 <footer> A personal website
   <p>&copy; No copyright</a></p>
 </footer>
+<script>
+    
+    const startit = () => {
+      setTimeout(function () {
+        console.log("start");
+        confetti.start();
+      }, 1000);
+    };
 
+    const stopit = () => {
+      setTimeout(function () {
+        console.log("stop");
+        confetti.stop();
+      }, 3000);
+    };
 
-
+    startit();
+    stopit();
+</script>
 </body>
 </html>
