@@ -1,0 +1,164 @@
+﻿
+var NowInTheHouseViewModel = function () {
+    var self = this;
+    self.eventId = ko.observable(0);
+    self.eventType = ko.observable("");
+    self.descriptionEn = ko.observable("");
+    self.descriptionFr = ko.observable("");
+    self.bellsAreRinging = ko.observable(false);
+    self.bellCountdown = ko.observable("");
+    self.bellReasonEn = ko.observable("");
+    self.bellReasonFr = ko.observable("");
+    self.isSilenced = ko.observable("");
+    self.silenceReasonEn = ko.observable("");
+    self.silenceReasonFr = ko.observable("");
+    self.bellStartDateTime = ko.observable("");
+    self.members = ko.observable("");
+    self.meetingId = ko.observable("");
+    self.isOffline = ko.observable("");
+    self.eventId = ko.observable("");
+    self.parlVuDesktopUrlEn = ko.observable("");
+    self.parlVuDesktopUrlFr = ko.observable("");
+    self.parlVuMobileUrlVideoEn = ko.observable("");
+    self.parlVuMobileUrlVideoFr = ko.observable("");
+    self.parlVuMobileUrlAudioEn = ko.observable("");
+    self.parlVuMobileUrlAudioFr = ko.observable("");
+    self.houseStatusMessage = ko.observable("");
+
+    //Decision observable
+    self.decisions = ko.observableArray([]);
+    self.addDecision = function (billId, decisionDescriptionEn, decisionDescriptionFr, decisionIdentifierEn, decisionIdentifierFr, decisionQualifierEn, decisionQualifierFr, sectionTitleEn, sectionTitleFr, voteNays, voteResultEn, voteResultFr, voteYeas, speakerCastingVoteEn, speakerCastingVoteFr) {
+        self.decisions.push(
+            {
+                billId: billId,
+                decisionDescriptionEn: decisionDescriptionEn,
+                decisionDescriptionFr: decisionDescriptionFr,
+                decisionIdentifierEn: decisionIdentifierEn,
+                decisionIdentifierFr: decisionIdentifierFr,
+                decisionQualifierEn: decisionQualifierEn ? "&nbsp;(" + decisionQualifierEn + ")" : "",
+                decisionQualifierFr: decisionQualifierFr ? "&nbsp;(" + decisionQualifierFr + ")" : "",
+                sectionTitleEn: sectionTitleEn,
+                sectionTitleFr: sectionTitleFr,
+                voteNays: voteNays,
+                voteNaysEn: (voteYeas > 0 || voteNays > 0) ? " Nays: " + voteNays : "",
+                voteNaysFr: (voteYeas > 0 || voteNays > 0) ? " Contre : " + voteNays : "",
+                voteResultEn: voteResultEn + "&nbsp;&nbsp;",
+                voteResultFr: voteResultFr + "&nbsp;&nbsp;",
+                voteYeas: voteYeas,
+                voteYeasEn: (voteYeas > 0 || voteNays > 0) ? "Yeas: " + voteYeas + "&nbsp;" : "",
+                voteYeasFr: (voteYeas > 0 || voteNays > 0) ? "Pour : " + voteYeas + "&nbsp;" : "",
+                speakerCastingVoteEn: speakerCastingVoteEn ? "Speaker's Casting Vote: " + speakerCastingVoteEn : "",
+                speakerCastingVoteFr: speakerCastingVoteFr ? "Voix prépondérante du Président : " + speakerCastingVoteFr : ""
+            });
+    };
+
+    //interventions observable
+    self.interventions = ko.observableArray([]);
+    self.addInterventions = function (name, caucusEn, caucusFr, caucusWebsiteColor, personLongHonorificEn, personLongHonorificFr, provinceEn, provinceFr, regionEn, regionFr, photo, personGender, personId) {
+        self.interventions.push(
+            {
+                name: name,
+                caucusEn: caucusEn,
+                caucusFr: caucusFr,
+                caucusWebsiteColor: caucusWebsiteColor,
+                personLongHonorificEn: personLongHonorificEn,
+                personLongHonorificFr: personLongHonorificFr,
+                provinceEn: provinceEn,
+                provinceFr: provinceFr,
+                regionEn: regionEn,
+                regionFr: regionFr,
+                photo: photo,
+                personGender: ko.observable(personGender),
+                urlEn: membersHomeUrl.replace("{0}", "en") + "/" + personId,
+                urlFr: membersHomeUrl.replace("{0}", "fr") + "/" + personId
+            });
+    };
+
+    //members observable
+    self.members = ko.observableArray([]);
+    self.addMembers = function (affId, affRoleId, conId) {
+        self.members.push(
+            {
+                affId: ko.observable(affId),
+                affRoleId: ko.observable(affRoleId),
+                conId: ko.observable(conId)
+            });
+    };
+
+    //itemOfBusiness observable
+    self.itemOfBusiness = ko.observableArray([]);
+    self.addItemOfBusiness = function (billId, itemDescriptionEn, itemDescriptionFr,itemId,itemIdentifierEn,itemIdentifierFr,itemQualifierEn,itemQualifierFr,motionId) {
+
+        self.itemOfBusiness.push(
+        {
+            billId: billId,
+            itemDescriptionEn: itemDescriptionEn,
+            itemDescriptionFr: itemDescriptionFr,
+            itemId: itemId,
+            itemIdentifierEn: itemIdentifierEn,
+            itemIdentifierFr: itemIdentifierFr,
+            itemQualifierEn: itemQualifierEn !== "" ? "&nbsp;(" + itemQualifierEn + ")" : "",
+            itemQualifierFr: itemQualifierFr !== "" ? "&nbsp;(" + itemQualifierFr + ")" : "",
+            motionId: motionId,
+            urlEn: (billId !== "") ? parldataWidgetUrl + "en/bill/" + billId : ((motionId !== "") ? parldataWidgetUrl + "en/motion/" + motionId : ""),
+            urlFr: (billId !== "") ? parldataWidgetUrl + "fr/bill/" + billId : ((motionId !== "") ? parldataWidgetUrl + "fr/motion/" + motionId : "")
+        });
+    };
+
+    //explanatoryContext observable
+    self.explanatoryContext = ko.observableArray([]);
+    self.addExplanatoryContext = function (contextDescriptionEn, contextDescriptionFr, contextTitleEn, contextTitleFr) {
+        self.explanatoryContext.push(
+            {
+                contextDescriptionEn: contextDescriptionEn,
+                contextDescriptionFr: contextDescriptionFr,
+                contextTitleEn: contextTitleEn,
+                contextTitleFr: contextTitleFr
+            });
+    };
+
+    //subsequentDivisions observable
+    self.subsequentDivisions = ko.observableArray([]);
+    self.addSubsequentDivisions = function (billId, itemDescriptionEn, itemDescriptionFr, itemId, itemIdentifierEn, itemIdentifierFr, itemQualifierEn, itemQualifierFr, motionId) {
+        self.subsequentDivisions.push(
+            {
+                titleEn: ko.observable("Votes"),
+                titleFr: ko.observable("Votes"),
+                billId: billId,
+                itemDescriptionEn: itemDescriptionEn,
+                itemDescriptionFr: itemDescriptionFr,
+                itemId: itemId,
+                itemIdentifierEn: itemIdentifierEn,
+                itemIdentifierFr: itemIdentifierFr,
+                itemQualifierEn: (itemQualifierEn !== "") ? "&nbsp;(" + itemQualifierEn + ")" : "",
+                itemQualifierFr: (itemQualifierFr !== "") ? "&nbsp;(" + itemQualifierFr + ")" : "",
+                motionId: motionId,
+                urlEn: (billId !== "") ? parldataWidgetUrl + "en/bill/" + billId : parldataWidgetUrl + "en/motion/" + motionId,
+                urlFr: (billId !== "") ? parldataWidgetUrl + "fr/bill/" + billId : parldataWidgetUrl + "fr/motion/" + motionId
+            });
+    };
+
+    self.resetInterventions = function () {
+        self.interventions.removeAll();
+    };
+
+    self.resetDecisions = function () {
+        self.decisions.removeAll();
+    };
+
+    self.resetItemOfBusiness = function () {
+        self.itemOfBusiness.removeAll();
+    };
+
+    self.resetExplanatoryContext = function () {
+        self.explanatoryContext.removeAll();
+    };
+
+    self.resetSubsequentDivisions = function () {
+        self.subsequentDivisions.removeAll();
+    };
+
+    self.resetMembers = function () {
+        self.members.removeAll();
+    };
+};

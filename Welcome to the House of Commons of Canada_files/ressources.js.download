@@ -1,0 +1,340 @@
+﻿
+
+var resources = {
+    ok: {
+        default: 'OK'
+    },
+    silhouette: {
+        m: "/Content/Parliamentarians/images/OfficialMpPhotos/silhouette_m.jpg",
+        f: "/Content/Parliamentarians/images/OfficialMpPhotos/silhouette.jpg"
+    },
+    current_member_speaking: {
+        en: 'Current Member Speaking',
+        fr: 'Député ayant présentement la parole'
+    },
+    current_member_speakingFe: {
+        en: 'Current Member Speaking',
+        fr: 'Députée ayant présentement la parole'
+    },
+    previous_member_speaking: {
+        en: 'Previous Members Speaking',
+        fr: 'Député(e)s ayant pris la parole',
+    },
+    view_live: {
+        en: 'Watch on ParlVU',
+        fr: 'Regardez sur ParlVU',
+    },
+    house_is_sitting: {
+        en: 'The House is currently sitting.',
+        fr: 'Une séance de la Chambre est en cours.'
+    },
+    house_is_adjourned:{
+        en: 'Adjourned',
+        fr: 'Ajournement'
+    },
+    extended_break_message: {
+        en: 'The House is adjourned.',
+        fr: 'La Chambre est ajournée.'
+    },
+    parliament_dissolved_message: {
+        en: 'Parliament is dissolved.',
+        fr: 'Le Parlement est dissout.'
+    },
+    session_prorogued_message: {
+        en: 'Parliament is prorogued.',
+        fr:  'Le Parlement est prorogé.'
+    },
+    decision: {
+        en: 'Decision:',
+        fr: 'Décision :'
+    },
+    speaker_decision: {
+        en: 'Speaker\'s Casting Vote:',
+        fr: 'Voix prépondérante du Président :'
+    },
+    yes: {
+        en: 'Yeas:',
+        fr: 'Pour :'
+    },
+    no: {
+        en: 'Nays:',
+        fr: 'Contre :'
+    },
+    subsequent_divisions_title: {
+        en: 'Next Votes',
+        fr: 'Votes à venir'
+    },
+    the_speaker: {
+        en: 'The Speaker',
+        fr: 'Le Président'
+    },
+    the_speakerFe: {
+        en: 'The Speaker',
+        fr: 'La Présidente'
+    },
+    deputy_chair: {
+        en: 'The Assistant Deputy Speaker ',
+        fr: 'Le Vice-président adjoint'
+    },
+    deputy_chairFe: {
+        en: 'The Assistant Deputy Speaker ',
+        fr: 'La Vice-présidente adjointe'
+    },
+    assistant_deputy_chair: {
+        en: 'The Assistant Deputy Speaker',
+        fr: 'Le Vice-président adjoint'
+    },
+    assistant_deputy_chairFe: {
+        en: 'The Assistant Deputy Speaker',
+        fr: 'La Vice-présidente adjointe'
+    },
+    deputy_speaker: {
+        en: 'The Deputy Speaker',
+        fr: 'Le Vice-président',
+    },
+    deputy_speakerFe: {
+        en: 'The Deputy Speaker',
+        fr: 'La Vice-présidente'
+    },
+    error_event_capture_offline: {
+        en: ' Connection lost. Attempting to reconnect.',
+        fr: ' Connexion perdue. Nous tentons de la rétablir.'
+    },
+    error_signalR_connection: {
+        en: ' Connection lost. Attempting to reconnect.',
+        fr: ' Connexion perdue. Nous tentons de la rétablir.'
+    },
+    error_signalR_slow: {
+        en: ' Slow connection. Site may not update.',
+        fr: ' Connexion lente. Il est possible que le site ne soit pas à jour.'
+    },
+    bells_are_ringing: {
+        en: 'Bells are Ringing',
+        fr: 'Le timbre d’appel sonne'
+    },
+    short_language: {
+        en: 'en',
+        fr: 'fr'
+    },
+    bells_are_ringing_message: {
+        en: 'Members are called to the House',
+        fr: 'Les députés sont convoqués à la Chambre'
+    },
+    show_more: {
+        en: 'Show more',
+        fr: 'Afficher plus'
+    },
+    show_less: {
+        en: 'Show less',
+        fr: 'Afficher moins'
+    },
+    Tooltips: [ 
+         {
+            en: "Approval, by a representative of the Crown, of a bill passed by the House and the Senate, making it into an Act of Parliament.",
+            fr: "La sanction royale est accordée par un représentant de la Couronne à un projet de loi adopté par la Chambre et le Sénat; le projet de loi devient alors une loi du Parlement.",
+            titleEn: "Royal Assent",
+            titleFr: "Sanction royale",
+            sectionId : "102"
+        },
+        {
+            en: "A decision on the procedural acceptability of some matter before the House.",
+            fr: "Jugement sur la recevabilité d'une question de procédure dont la Chambre est saisie.",
+            titleEn: "Speaker's Ruling",
+            titleFr: "Décision de la présidence",
+            sectionId : "134"
+        },
+        {
+            en: "At the opening of the Wednesday sitting, a designated Member leads the House in singing <em>O Canada</em>.",
+            fr: "À l'ouverture de la séance du mercredi, un député désigné entonne l'<em>Ô Canada</em>.",
+            titleEn: "National Anthem",
+            titleFr: "Hymne national",
+            sectionId : "136"
+        },
+        {
+            en: "Delivered at the opening of a session of Parliament, the Speech from the Throne outlines the government's plans for the session.",
+            fr: "Prononcé à l'ouverture d'une session du Parlement, le discours du Trône donne un aperçu du programme du gouvernement pour la session.",
+            titleEn: "Address in Reply to the Speech from the Throne",
+            titleFr: "Adresse en réponse au discours du Trône",
+            sectionId : "168"
+        },
+        {
+            en: "A 30-minute period prior to the daily adjournment, during which Members may raise matters they believe have not been dealt with satisfactorily. ",
+            fr: "Période de 30 minutes avant l'ajournement quotidien, au cours de laquelle les députés peuvent soulever des questions auxquelles, à leur avis, on n'a pas répondu d'une façon satisfaisante.",
+            titleEn: "Adjournment Proceedings",
+            titleFr: "Débat d'ajournement",
+            sectionId : "173"
+        },
+        {
+            en: "A debate held on a motion to adjourn, devoted to the discussion of a specific and important matter requiring urgent consideration.",
+            fr: "Débat sur une motion d'ajournement consacré à la discussion d'une affaire précise et importante dont l'étude s'impose d'urgence.",
+            titleEn: "Emergency Debate",
+            titleFr: "Débat d'urgence",
+            sectionId : "181"
+        },
+        {
+            en: "A daily 15-minute period when Members may make brief statements on matters of national, regional or local importance.",
+            fr: "Période quotidienne de 15 minutes au cours de laquelle des députés peuvent faire de brèves déclarations sur des questions d'intérêt national, régional ou local.",
+            titleEn: "Statements by Members",
+            titleFr: "Déclarations de députés",
+            sectionId : "2"
+        },
+        {
+            en: "When a Member requests an emergency debate, the Speaker decides whether or not the request will be granted, weighing certain criteria to determine if the matter relates to a genuine emergency and if it can be dealt with by the House in another way.",
+            fr: "Quand un député demande un débat d'urgence, le Président décide s'il accepte ou non la demande en tenant compte de certains critères, afin de déterminer si l'affaire est vraiment urgente et si la Chambre peut en être saisie d'une autre manière.",
+            titleEn: "Requests for Emergency Debates",
+            titleFr: "Demandes de débats d'urgence",
+            sectionId : "203"
+        },
+        {
+            en: "Under Routine Proceedings, a Minister may, if he or she desires, make a short factual announcement or statement of government policy. Spokespersons of recognized opposition parties are given an opportunity to comment.",
+            fr: "Pendant les Affaires courantes, un ministre peut prononcer un court exposé de faits ou de politique gouvernementale. Un porte-parole de chaque parti de l'opposition officiellement reconnu peut ensuite commenter l'exposé.",
+            titleEn: "Statements by Ministers",
+            titleFr: "Déclarations de députés",
+            sectionId : "208"
+        },
+        {
+            en: "Business of a basic nature for which a daily period is set aside in the House.",
+            fr: "Affaires usuelles pour lesquelles la Chambre réserve une période quotidienne.",
+            titleEn: "Routine Proceedings",
+            titleFr: "Affaires courantes",
+            sectionId : "3"
+        },
+        {
+            en: "The process by which the government submits its projected annual expenditures for parliamentary approval.",
+            fr: "Processus par lequel le gouvernement soumet ses prévisions annuelles de dépenses à l'approbation du Parlement.",
+            titleEn: "Business of Supply",
+            titleFr: "Travaux des subsides",
+            sectionId : "60003"
+        },
+        {
+            en: "Bills and motions sponsored by private Members, for which a period is devoted each sitting day.",
+            fr: "Chaque jour de séance, une période de temps est réservée pour l’étude des projets de loi et motions parrainés par de simples députés.",
+            titleEn: "Private Members' Business",
+            titleFr: "Affaires émanant des députés",
+            sectionId : "60004"
+        },
+        {
+            en: "The process by which the government obtains the necessary resources to meet its expenses.",
+            fr: "Processus par lequel le gouvernement obtient les fonds nécessaires en prévision de ses dépenses.",
+            titleEn: "Ways and Means",
+            titleFr: "Voies et moyens",
+            sectionId : "60007"
+        },
+        {
+            en: "The allocation of a specific period of time for the consideration of one or more stages of a public bill.",
+            fr: "Désignation d'une période de temps déterminée pour les délibérations sur une ou plusieurs étapes d'un projet de loi d'intérêt public",
+            titleEn: "Time Allocation",
+            titleFr: "Attribution de temps",
+            sectionId : "60014"
+        },
+        {
+            en: "A procedure preventing further adjournment of debate on any motion and requiring that the motion come to a vote at the end of the sitting in which it is invoked.",
+            fr: "Procédure qui a pour effet d'empêcher qu'un débat sur une motion soit de nouveau ajourné et de provoquer un vote à la fin de la séance en cours.",
+            titleEn: "Closure",
+            titleFr: "Clôture",
+            sectionId : "60016"
+        },
+        {
+            en: "A statement normally made at the end of Question Period on Thursday, outlining the government business to be considered in the following week.",
+            fr: "Déclaration ayant lieu normalement à la fin de la période des questions orales du jeudi, au cours de laquelle on donne un aperçu des travaux qui seront abordés la semaine suivante.",
+            titleEn: "Business of the House - Weekly Statement",
+            titleFr: "Travaux de la Chambre - Déclaration hebdomadaire",
+            sectionId : "60100"
+        },
+        {
+            en: "Delivered at the opening of a session of Parliament, the Speech from the Throne outlines the government's plans for the session.",
+            fr: "Prononcé à l'ouverture d'une session du Parlement, le discours du Trône donne un aperçu du programme du gouvernement pour la session.",
+            titleEn: "Consideration of Her Excellency's Speech from the Throne",
+            titleFr: "Prise en considération du discours du Trône de Son Excellence",
+            sectionId : "60101"
+        },
+        {
+            en: "Bills concerned with public policy introduced by a Minister in the House. ",
+            fr: "Projet de loi d’intérêt public présenté à la Chambre par un ministre.",
+            titleEn: "Government Bills (Commons)",
+            titleFr: "Projets de loi émanant du gouvernement (Communes)",
+            sectionId : "60102"
+        },
+        {
+            en: "Bills concerned with public policy sponsored by a Minister in the House, but first introduced in the Senate.",
+            fr: "Projet de loi d’intérêt public parrainé à la Chambre par un ministre, mais d’abord présenté au Sénat.",
+            titleEn: "Government Bills (Senate)",
+            titleFr: "Projets de loi émanant du gouvernement (Sénat)",
+            sectionId : "60103"
+        },
+        {
+            en: "Motions initiated by a Minister or Parliamentary Secretary.",
+            fr: "Motions initiées par un ministre ou un secrétaire parlementaire.",
+            titleEn: "Government Business",
+            titleFr: "Affaires émanant du gouvernement",
+            sectionId : "600104"
+        },
+        {
+            en: "Funds approved by Parliament to cover government expenditures for the period from April 1 to June 23 of each fiscal year, pending approval of the main estimates in June.",
+            fr: "Crédits que le Parlement accorde chaque année au gouvernement pour la période du 1er avril au 23 juin afin de couvrir ses dépenses au cours des mois précédant l'adoption du budget principal des dépenses en juin.",
+            titleEn: "Interim Supply",
+            titleFr: "Crédits provisoires",
+            sectionId : "60105"
+        },
+        {
+            en: "Consideration of the government’s planned spending for the coming fiscal year.",
+            fr: "Étude des dépenses prévues du gouvernement pour le prochain exercice financier.",
+            titleEn: "Main Estimates",
+            titleFr: "Budget principal des dépenses",
+            sectionId : "60106"
+        },
+        {
+            en: "Motion moved by a Member of the opposition on an allotted day under business of supply. Such a motion may relate to any matter within Parliament’s jurisdiction.",
+            fr: "Motion proposée par un député de l’opposition lors d’un jour désigné en vertu des travaux des subsides. Une telle motion peut traiter de toute question relevant de la compétence du Parlement.",
+            titleEn: "Opposition Motion",
+            titleFr: "Motion de l'opposition",
+            sectionId : "60107"
+        },
+        {
+            en: "The Standing Orders provide for a one-day special debate on the Standing Orders and procedures of the House and its committees early in each Parliament.",
+            fr: "Le Règlement exige un débat spécial d’un jour sur le Règlement et la procédure de la Chambre et de ses comités au début de chaque législature.",
+            titleEn: "Standing Orders and Procedure",
+            titleFr: "Règlement et procédure",
+            sectionId : "60108"
+        },
+        {
+            en: "An expenditure plan introduced to provide funds to the government to meet new or increased expenses.",
+            fr: "Plan de dépenses visant à obtenir des crédits supplémentaires pour faire face à des imprévus ou à une augmentation des dépenses du gouvernement.",
+            titleEn: "Supplementary Estimates",
+            titleFr: "Budget supplémentaire des dépenses",
+            sectionId : "60109"
+        },
+        {
+            en: "Vote on the Designation of an Item",
+            fr: "Vote sur la désignation d'une affaire",
+            titleEn: "Vote on the Designation of an Item",
+            titleFr: "Vote sur la désignation d'une affaire",
+            sectionId : "60110"
+        },
+        {
+            en: "The process by which the government submits its projected annual expenditures for parliamentary approval.",
+            fr: "Processus par lequel le gouvernement soumet ses prévisions annuelles de dépenses à l'approbation du Parlement.",
+            titleEn: "Business of Supply",
+            titleFr: "Travaux des subsides",
+            sectionId : "60124"
+        },
+       {
+            en: "Funds approved by Parliament to cover government expenditures for the period from April 1 to June 23 of each fiscal year, pending approval of the main estimates in June.",
+            fr: "Crédits que le Parlement accorde chaque année au gouvernement pour la période du 1er avril au 23 juin afin de couvrir ses dépenses au cours des mois précédant l'adoption du budget principal des dépenses en juin.",
+            titleEn: "Interim Supply",
+            titleFr: "Crédits provisoires",
+            sectionId : "60130"
+        },
+        {
+            en: "A question raised by a Member and decided by the Speaker, with respect to any departure from the Standing Orders or customary procedures.",
+            fr: "Question soulevée par un député et tranchée par le Président, à la suite de toute dérogation au Règlement ou à la procédure courante.",
+            titleEn: "Point of Order",
+            titleFr: "Rappel au Règlement",
+            sectionId : "96"
+        }            
+    ]
+
+};
+
+
+

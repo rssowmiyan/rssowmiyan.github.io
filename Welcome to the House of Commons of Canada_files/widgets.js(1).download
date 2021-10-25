@@ -1,0 +1,112 @@
+﻿//********************************************************************************************************************
+// widgets for publication
+// Initial Creation : brassj - 2017/01/26
+//********************************************************************************************************************
+
+var ParlDataWidgets = {};
+ParlDataWidgets.content = {};
+
+ParlDataWidgets.initializeWidgets = function (url) {
+    var scripts = document.getElementsByTagName("script")
+    var url = scripts[scripts.length - 1].src;
+
+    ParlDataWidgets.domain = url.split('Scripts')[0];
+
+    $('head').append('<link rel="stylesheet" href="' + ParlDataWidgets.domain + 'Content/Styles-Widgets.css" type="text/css" />');
+
+    //$.get(ParlDataWidgets.domain + '/Initialize', function (data) {
+    //    data = jQuery.parseJSON(data);
+
+    //    $.each(data.css, function () {
+    //        $('head').append('<link rel="stylesheet" href="'+this+'" type="text/css" />');
+    //    });
+    //    $.each(data.js, function () {
+    //        $('head').append('<script type="text/javascript" src="'+this+'" ></script>');           
+    //    });
+    //});
+}
+
+ParlDataWidgets.publicationPopOverStart = function (elem) {
+    if (document.getElementById($(elem).attr('aria-describedby'))) {
+        $(elem).popover('hide')
+    } else {
+        $('.parldata-widget-popover').remove()
+        $(elem).popover({ placement: 'bottom', trigger: 'manual', container: 'body', title: '&nbsp;<i class="hoc-icon icon-times pull-right parldata-widget-popover-close"></i>', content: '<div class=""><div class="spinnercentered"><div class="progress-bar progress-bar-striped active"></div></div></div>', html: true });
+        setTimeout(function () { $('#' + $(elem).attr('aria-describedby')).addClass('parldata-widget-popover'); }, 10)
+        $('#' + $(elem).attr('aria-describedby')).addClass('parldata-widget-popover');
+        $(elem).popover('show').addClass('parldata-widget-popup')
+
+        if ($(elem).attr('data-original-title') != '')
+            $('.popover-title').html($(elem).attr('data-original-title') + '&nbsp;<i class="hoc-icon icon-times pull-right parldata-widget-popover-close"></i>')
+    }
+}
+
+ParlDataWidgets.publicationPopOver = function (elem) {
+
+    if ($(elem).attr('aria-describedby')) {
+        $('#' + $(elem).attr('aria-describedby')).addClass('parldata-widget-popover').find('.popover-content').html(ParlDataWidgets.content[elem]);
+    }
+
+}
+
+ParlDataWidgets.publicationPopOverClose = function () {
+    $('.parldata-widget-popup').popover('hide');
+}
+
+ParlDataWidgets.getData = function (elem) {
+
+    if (!$(elem).hasClass('is-fetching-data')) {
+        $(elem).addClass('is-fetching-data')
+
+        uri = $(elem).attr('href')
+
+        $.ajax({
+            url: uri,
+            dataType: 'html',
+            type: 'GET',
+            context: elem,
+            success: function (data) {
+                var content = $('<output>').append($.parseHTML(data));
+                ParlDataWidgets.content[this] = $(content).find('#widget-content')
+                $(this).trigger('data-received', ParlDataWidgets.content[this])
+            }
+        })
+    }
+
+}
+
+$(document).on('data-received', '.parldata-widget-popup, .documentPopup, .MemberOfParliamentPopup', function (e, data) {
+    ParlDataWidgets.publicationPopOver(this);
+});
+
+$(document).on('click', '.parldata-widget-popup, .documentPopup, .MemberOfParliamentPopup', function () {
+    ParlDataWidgets.publicationPopOverStart(this)
+
+    if (ParlDataWidgets.content[this]) {
+        $(this).trigger('data-received', ParlDataWidgets.content[this])
+    } else {
+        ParlDataWidgets.getData(this);
+    }
+
+    return false;
+});
+
+$(document).on('click', '.parldata-widget-popover-close', function () {
+    ParlDataWidgets.publicationPopOverClose()
+});
+
+$(document).on('click', '.parldata-widget-popover .popover-content', function () {
+    return false;
+});
+
+$(document).on('click', '.parldata-widget-popover .popover-content a', function (event) {
+    event.stopPropagation()
+    return true;
+});
+
+$(document).click(function () {
+    ParlDataWidgets.publicationPopOverClose()
+});
+
+ParlDataWidgets.initializeWidgets()
+

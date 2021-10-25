@@ -1,0 +1,499 @@
+﻿var nith, locale, parldataWidgetUrl, membersHomeUrl, prevDescription, isMeetingInProgress;
+
+var Hoc = {
+
+    GetParameterByName: function (name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+
+    },
+
+    //Update Intervention ViewModel
+    //clear Interventions array
+    UpdateIntervention: function (e) {
+
+        nith.resetInterventions();
+        $(".interventionsList").empty();
+        if (e.Interventions) {
+            for (var i = 0, len = e.Interventions.length; i < len; i++) {
+                var memberPhotoPath, personTitleEn, personTitleFr;
+
+                if (e.Members !== null && e.Members[i] !== null) {
+
+                    switch (e.Members[i].AffRolId) {
+
+                        case 15: //Speaker of the House                                   
+                            memberPhotoPath = e.Interventions[i].Photo.replace('.jpg', '_alt.jpg');
+                            if (e.Interventions[i].PersonGender === 'F') {
+                                personTitleEn = resources.the_speakerFe[resources.short_language.en];
+                                personTitleFr = resources.the_speakerFe[resources.short_language.fr];
+                            } else {
+                                personTitleEn = resources.the_speaker[resources.short_language.en];
+                                personTitleFr = resources.the_speaker[resources.short_language.fr];
+                            }
+                            break;
+                        case 22: //Deputy Speaker and Chair of the Committees of the Whole
+                            memberPhotoPath = e.Interventions[i].Photo.replace('.jpg', '_alt.jpg');
+                            if (e.Interventions[i].PersonGender === 'F') {
+                                personTitleEn = resources.deputy_speakerFe[resources.short_language.en];
+                                personTitleFr = resources.deputy_speakerFe[resources.short_language.fr];
+                            } else {
+                                personTitleEn = resources.deputy_speaker[resources.short_language.en];
+                                personTitleFr = resources.deputy_speaker[resources.short_language.fr];
+                            }
+                            break;
+                        case 92: //Deputy Chair Of Committees of the Whole
+                            memberPhotoPath = e.Interventions[i].Photo.replace('.jpg', '_alt.jpg');
+                            if (e.Interventions[i].PersonGender === 'F') {
+                                personTitleEn = resources.deputy_chairFe[resources.short_language.en];
+                                personTitleFr = resources.deputy_chairFe[resources.short_language.fr];
+                            } else {
+                                personTitleEn = resources.deputy_chair[resources.short_language.en];
+                                personTitleFr = resources.deputy_chair[resources.short_language.fr];
+                            }
+                            break;
+                        case 93: //Assistant Deputy Chair Of Committees of the Whole
+                            memberPhotoPath = e.Interventions[i].Photo.replace('.jpg', '_alt.jpg');
+                            if (e.Interventions[i].PersonGender === 'F') {
+                                personTitleEn = resources.assistant_deputy_chairFe[resources.short_language.en];
+                                personTitleFr = resources.assistant_deputy_chairFe[resources.short_language.fr];
+                            } else {
+                                personTitleEn = resources.assistant_deputy_chair[resources.short_language.en];
+                                personTitleFr = resources.assistant_deputy_chair[resources.short_language.fr];
+                            }
+                            break;
+                        default:
+                            if (e.Interventions[i].Photo !== null) {
+                                memberPhotoPath = e.Interventions[i].Photo;
+                            }
+                            else {
+                                if (e.Interventions[i].PersonGender === 'F') {
+                                    memberPhotoPath = resources.silhouette.f;
+                                } else {
+                                    memberPhotoPath = resources.silhouette.m;
+                                }
+                            }
+                            personTitleEn = e.Interventions[i].PersonLongHonorificEn;
+                            personTitleFr = e.Interventions[i].PersonLongHonorificFr;
+
+                    }
+                }
+
+                nith.addInterventions(
+                    e.Interventions[i].Name,
+                    e.Interventions[i].PartiShortEn,
+                    e.Interventions[i].PartiShortFr,
+                    e.Interventions[i].CaucusWebsiteColor,
+                    personTitleEn,
+                    personTitleFr,
+                    e.Interventions[i].ProvinceEn,
+                    e.Interventions[i].ProvinceFr,
+                    e.Interventions[i].RegionEn,
+                    e.Interventions[i].RegionFr,
+                    memberPhotoPath,
+                    e.Interventions[i].PersonGender,
+                    e.Interventions[i].CurrentPersonId);
+            }
+        }
+
+    },
+    //Initialize SignalR connection
+    InitSignalR: function () {
+        var prevNithId = 0;
+        var debug = Hoc.GetParameterByName('debug');
+        var disablejs = Hoc.GetParameterByName('disablejs');
+        //Without generated proxy
+        var url = $('#hoc-real-time-service').data('url'); //TO DO: set var path server side
+        var connection = $.hubConnection(url);
+
+        if (debug === 'true') {
+            connection.logging = true;
+        }
+
+        //Initialize hub
+        var parliamentNitHHub = connection.createHubProxy('RealTimeEventHub');
+
+        // register a client method on hub to be invoked by the server
+        parliamentNitHHub.on('updateNowInTheHouse', function (eventMsg) {
+            // Debugger: show signalR Events in browser console when enabled
+            if (debug === 'true') {
+                console.info("RealTimeEventHub Event received:");
+                console.info(eventMsg);
+            }
+            if (disablejs === 'true') {
+                //do nothing, 
+                //emulate javascript disabled
+                //do not update view from signalR
+            } else {
+                //Do not update view from signalR if isMeetingInProgress flag (from Parldata) is false or if signalR EventType is not an adjournement (id:340)
+                if (prevNithId <= eventMsg.Id && (isMeetingInProgress || eventMsg.EventType !== '340')) {
+                    prevNithId = eventMsg.Id;
+                    Hoc.UpdateNithModel(eventMsg);
+                }
+                else {
+                    //If adjournemt event comes from signalR, update view, previNithId will not be 0
+                    if (eventMsg.EventType === '340' && prevNithId > 0) {
+                        Hoc.UpdateNithModel(eventMsg);
+                    }
+                    if (debug === 'true') {
+                        if (prevNithId > eventMsg.Id) {
+                            console.info("*** Incorrect sequence detected, nith.Id(" + eventMsg.Id + ") has been ignored, previous Id was " + prevNithId);
+                        }
+                        if (prevNithId !== 0) {
+                            console.info('Adjournement from signalR');
+                        }
+                        if (!isMeetingInProgress) {
+                            console.info("Meeting is not in Progress, signalR updates disabled (source Parldata)");
+                        }
+                    }
+                }
+            }
+        });
+
+        // Start the connection with the server
+        connection.start({ transport: ['webSockets', 'longPolling'], jsonp: true })
+            .done(function (data) {
+                if (debug === 'true') {
+                    console.info('RealTimeEventHub connected ' + data.transport.name + ', connection ID= ' + data.id);
+                }
+            }).fail(function (error) {
+                if (debug === 'true') {
+                    console.info('Error: ' + error);
+                }
+            });
+
+        // SignalR Timeout set by default at 30 seconds
+        // SginalR KeepAlive set at 10 seconds
+        // www.asp.net/signalr/overview/guide-to-the-api/handling-connection-lifetime-events#timeoutkeepalive
+        //Raised when the connection has disconnected, try to restart connection every 5 seconds
+
+        connection.disconnected(function () {
+
+            $('.connectionStatus').html("<span class='connectionStatusMessage'>" + "<p class='connectionStatusText-slow'>" + resources.error_signalR_connection[locale] + '</p>' + '</span>');
+            setTimeout(function () {
+                console.info('Trying to reconnect...');
+                connection.start({ transport: ['webSockets', 'longPolling'], jsonp: true }).done(function () {
+                    console.info('Reconnect succeeded...');
+                    $('.connectionStatus').html("");
+                }).fail(function (error) {
+                    console.info('Error: ' + error);
+                });
+            }, 5000);
+        });
+
+        //SignalR Slow: raised when the client detects a slow or frequently dropping connection.
+        connection.connectionSlow(function () {
+            $('.connectionStatus').html("<span class='connectionStatusMessage-slow'>" + "<p class='connectionStatusText-slow'>" + resources.error_signalR_slow[locale] + '</p>' + '</span>');
+        });
+        //On reconnect, remove connection status message
+        connection.reconnected(function () {
+            $(".connectionStatus").html();
+        });
+
+    },
+
+    // Helper to find data in a json object by key and value.
+    GetObjects: function (obj, key, val) {
+
+        var objects = [];
+        for (var i in obj) {
+            if (!obj.hasOwnProperty(i))
+                continue;
+            if (typeof obj[i] === 'object') {
+                objects = objects.concat(this.GetObjects(obj[i], key, val));
+            } else if (i === key && obj[key] === val) {
+                objects.push(obj);
+            }
+        }
+        return objects;
+    },
+
+    // Generate tooltip Icon with desciption
+    GetDescription: function (description, obj, lang) {
+        var html = '<i class="hoc-icon icon-info-circle" data-container="body" data-toggle="tooltip" data-html="true" title="{{title}}" role="tooltip"><span class="sr-only">{{title}}</span></i>';
+        var tooltip;
+        if (obj.length > 0) {
+            html = html.replace("{{title}}", obj[0][lang]);
+            tooltip = description + '&nbsp;' + html;
+            return tooltip;
+        } else {
+            return description;
+        }
+    },
+
+    // Find tool tip data if defined in resources.Tooltips array
+    FindTooltipData: function (description) {
+
+        return Hoc.GetObjects(resources.Tooltips, 'titleEn', description);
+
+    },
+
+    //Updates NowInTheHouse View Model
+    UpdateNithModel: function (e) {
+
+        Hoc.UpdateIntervention(e);
+        Hoc.UpdateMember(e);
+        Hoc.UpdateDecision(e);
+        Hoc.UpdateItemOfBusiness(e);
+        Hoc.UpdateExplanatoryContext(e);
+        Hoc.UpdateSubsequentDivisions(e);
+
+        //Set Order Of Business
+
+        // if Order of Business is different from previous one - clear tooltip to prevent the popup to be stuck
+        if (e.DescriptionEn !== prevDescription) {
+            $('[data-toggle="tooltip"]').tooltip('hide');
+            prevDescription = e.DescriptionEn;
+        }
+        //Set ParlVU links
+        nith.parlVuDesktopUrlEn(e.ParlVuDesktopUrlEn);
+        nith.parlVuDesktopUrlFr(e.ParlVuDesktopUrlFr);
+        // find Tool tip data
+        var toolTipObj = Hoc.FindTooltipData(e.DescriptionEn);
+
+        // inject tool tip in DOM
+        nith.descriptionEn(Hoc.GetDescription(e.DescriptionEn, toolTipObj, "en"));
+        nith.descriptionFr(Hoc.GetDescription(e.DescriptionFr, toolTipObj, "fr"));
+
+        //Set EventType
+        nith.eventType(e.EventType);
+
+        //Bells Are Ringing
+        if (e.BellsAreRinging) {
+            Hoc.InitBells(e.BellCountdown, e.BellReasonEn, e.BellReasonFr, e.BellStartDateTime);
+            if (e.BellReasonEn !== "Other") {
+                nith.bellReasonEn(e.BellReasonEn);
+                nith.bellReasonFr(e.BellReasonFr);
+                $(".clock").show();
+                $("#clock").show();
+            } else {
+                nith.bellReasonEn("");
+                nith.bellReasonFr("");
+                $(".clock").show();
+                $("#clock").hide();
+            }
+        } else {
+            $(".clock").hide();
+        }
+
+        // House Status Message
+        // If Adjourned hide ParlVu button and remove Description
+
+        if (e.EventType === 340) {
+            nith.houseStatusMessage(resources.house_is_adjourned[locale]);
+            $('.in-the-house-watchlive-server-side').remove();
+            $('.in-the-house-watchlive-client-side').hide();
+            $('#now-in-the-housedescription').html('');
+        } else {
+            nith.houseStatusMessage(resources.house_is_sitting[locale]);
+            $('.in-the-house-watchlive-server-side').remove();
+            $('.in-the-house-watchlive-client-side').show();
+        }
+
+        // Vote in progress message
+        // Show Live vote message and button link when vote in progress
+        // ===============================================================================================
+        // ======= Do to many EventTypeId, we had to use the text compare ================================
+        // ======= We don't know for how much time the feature will live, for live Vote - PT 52957 =======
+        // ===============================================================================================
+        if (e.DescriptionEn === 'Votes' || e.DescriptionFr === 'Votes') {
+            $('.live-vote-message').show();
+        } else {
+            $('.live-vote-message').hide();
+        }
+
+        //Silence Event
+        nith.silenceReasonEn(e.SilenceReasonEn);
+        nith.silenceReasonFr(e.SilenceReasonFr);
+
+        //If Event Capture flag is on, show message
+        if (e.IsOffline === true) {
+            //$('.connectionStatus').html("<span class='connectionStatusMessage ion-ios-close-outline-custom'>" + "<div class='connectionStatusBar'> </div>" + "<p class='connectionStatusText'>" + resources.error_event_capture_offline[locale] + '</p>' + '</span>');
+            console.info(resources.error_event_capture_offline[locale] + " Source Event Capture");
+        }
+        else {
+            $('.connectionStatus').html("");
+        }
+
+        if (!(e.EventType === 340 || e.EventType === 337)) {
+            $('.sync-view').remove();
+            $('.async-view').show();
+        }
+
+        Hoc.InTheHouseContent();
+        $('[data-toggle="tooltip"]').tooltip({ delay: { "show": 300, "hide": 50 }, placement: "top" });
+
+    },
+    //Update Members ViewModel
+    //Clear Members array
+    UpdateMember: function (e) {
+
+        nith.resetMembers();
+        for (var j = 0, length = e.Members.length; j < length; j++) {
+            nith.addMembers(
+                e.Members[j].AffId,
+                e.Members[j].AffRolId,
+                e.Members[j].ConId);
+        }
+    },
+    //Update Decisions ViewModel
+    //Clear Decision array
+    UpdateDecision: function (e) {
+
+        nith.resetDecisions();
+
+        if (e.Decision) {
+            nith.addDecision(
+                e.Decision.BillId,
+                e.Decision.DecisionDescriptionEn,
+                e.Decision.DecisionDescriptionFr,
+                e.Decision.DecisionIdentifierEn,
+                e.Decision.DecisionIdentifierFr,
+                e.Decision.DecisionQualifierEn,
+                e.Decision.DecisionQualifierFr,
+                e.Decision.SectionTitleEn,
+                e.Decision.SectionTitleFr,
+                e.Decision.VoteNays,
+                e.Decision.VoteResultEn,
+                e.Decision.VoteResultFr,
+                e.Decision.VoteYeas,
+                e.Decision.SpeakerCastingVoteEn,
+                e.Decision.SpeakerCastingVoteFr
+            );
+        } else {
+            //When there are no decisions, create the orbject key with no value
+            nith.addDecision("", "", "", "", "", "", "", "", "", "", "", "", "");
+        }
+
+    },
+    //Update Item of Business ViewModel
+    UpdateItemOfBusiness: function (e) {
+
+        nith.resetItemOfBusiness();
+        nith.addItemOfBusiness(
+            e.IoB.BillId,
+            e.IoB.ItemDescriptionEn,
+            e.IoB.ItemDescriptionFr,
+            e.IoB.ItemId,
+            e.IoB.ItemIdentifierEn,
+            e.IoB.ItemIdentifierFr,
+            e.IoB.ItemQualifierEn,
+            e.IoB.ItemQualifierFr,
+            e.IoB.MotionId
+        );
+
+    },
+    //Update Explanatory Context ViewModel
+    UpdateExplanatoryContext: function (e) {
+
+        nith.resetExplanatoryContext();
+        nith.addExplanatoryContext(
+            e.ExplanatoryContext.ContextDescriptionEn,
+            e.ExplanatoryContext.ContextDescriptionFr,
+            e.ExplanatoryContext.ContextTitleEn,
+            e.ExplanatoryContext.ContextTitleFr
+        );
+
+    },
+    //Update SubsequentDivsions ViewModel
+    UpdateSubsequentDivisions: function (e) {
+
+        nith.resetSubsequentDivisions();
+        if (e.SubsequentDivisions) {
+            for (var k = 0, l = e.SubsequentDivisions.length; k < l; k++) {
+                nith.addSubsequentDivisions(
+                    e.SubsequentDivisions[k].BillId,
+                    e.SubsequentDivisions[k].ItemDescriptionEn,
+                    e.SubsequentDivisions[k].ItemDescriptionFr,
+                    e.SubsequentDivisions[k].ItemId,
+                    e.SubsequentDivisions[k].ItemIdentifierEn,
+                    e.SubsequentDivisions[k].ItemIdentifierFr,
+                    e.SubsequentDivisions[k].ItemQualifierEn,
+                    e.SubsequentDivisions[k].ItemQualifierFr,
+                    e.SubsequentDivisions[k].MotionId
+                );
+            }
+        } else {
+            //When there are no subsequentDivisions, create the orbject key with no value
+            nith.addSubsequentDivisions("", "", "", "", "", "", "", "", "");
+        }
+
+    },
+    // Handle Show More/Show Less logic depending on content height
+    InTheHouseContent: function () {
+
+        var inTheHouseContentHeight = 327;
+
+        if ($("#in-the-house-content").hasClass("in")) {
+            //do nothing
+        } else if ($(window).width() > 767) {
+
+            var inTheHouseHeaderHeight = $('#in-the-house-header').outerHeight(true);
+            var widgetHeight = parseInt($('.tabbed-widget-content-wrapper').css('min-height'), 10);
+            var inTheHouseFooterHeight = $('#in-the-house-footer').outerHeight();
+
+            inTheHouseContentHeight = widgetHeight - inTheHouseHeaderHeight - inTheHouseFooterHeight;
+
+            $('#in-the-house-content').css('min-height', inTheHouseContentHeight);
+            $('#in-the-house-content').height(inTheHouseContentHeight);
+        }
+
+        if ($("#in-the-house-content-list").height() > inTheHouseContentHeight) {
+            $("#in-the-house-show-more").removeClass("invisible");
+        } else {
+            $("#in-the-house-show-more").addClass("invisible");
+        }
+    },
+    // Init Bells Are Rining countdown timer
+    InitBells: function (BellCountdown, BellReasonEn, BellReasonFr, BellStartDateTime) {
+
+        console.info('initilizing Bells');
+        var dateToCountdownTo = moment(BellStartDateTime);
+        var bellCountdown = parseInt(BellCountdown);
+        dateToCountdownTo.add(bellCountdown, 'm');
+
+        //start countdown
+        $('#clock').countdown(dateToCountdownTo.format('YYYY/MM/DD HH:mm:ss'), function (event) {
+            var totalHours = event.offset.totalDays * 24 + event.offset.hours;
+            $(this).html(event.strftime(totalHours + '%-H:%M:%S'));
+        });
+
+    },
+
+    NowInTheHouseWidget: $(function () {
+
+        // set local variables
+        locale = document.getElementById('culture').value;
+        parldataWidgetUrl = document.getElementById('parldataWidgets-url').value;
+        membersHomeUrl = document.getElementById('membersHome-url').value;
+        isMeetingInProgress = document.getElementById('isMeetingInProgress').value === 'True';
+
+        // init DecisionViewModel and apply knockout bindings
+        nith = new NowInTheHouseViewModel();
+        ko.applyBindings(nith);
+
+        Hoc.InitSignalR();
+
+
+        // Call InTheHouseContent on resize
+        $(window).resize(function () {
+            Hoc.InTheHouseContent();
+        });
+
+        $('#tabbed-widget-in-the-house-tab[data-toggle="tab"]').on('shown.bs.tab', function () {
+            Hoc.InTheHouseContent();
+        });
+
+        $('#in-the-house-show-more-less-link').click(function () {
+            if ($("#in-the-house-content").hasClass("in")) {
+                $("#in-the-house-show-more-less-link").html(resources.show_more[locale] + "&nbsp;<i class='hoc-icon icon-down'></i>");
+            }
+            else {
+                $("#in-the-house-show-more-less-link").html(resources.show_less[locale] + "&nbsp;<i class='hoc-icon icon-up'></i>");
+            }
+        });
+
+    })
+};
